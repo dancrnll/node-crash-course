@@ -11,18 +11,23 @@ app.set('view engine', 'ejs');
 app.listen(3000);
 
 app.get('/', (req, res) => {
-    res.render('index');
+    const blogs = [
+        {title: 'Yoshi finds eggs', snippet: 'Loren ipsum dolor sit amet consectetur'},
+        {title: 'Mario finds stars', snippet: 'Loren ipsum dolor sit amet consectetur'},
+        {title: 'How to defeat bowser', snippet: 'Loren ipsum dolor sit amet consectetur'},
+    ];
+    res.render('index', { title: 'Home', blogs });
 });
 
 app.get('/about', (req, res) => {
-    res.render('about');
+    res.render('about', { title: 'About' });
 });
 
 app.get('/BLOGS/CREATE', (req, res) => {
-    res.render('create');
+    res.render('create', { title: 'Create a New Blog' });
 });
 
 // 404 page
 app.use((req, res) => {
-    res.status(404).render('404');
+    res.status(404).render('404', { title: '404' });
 });
