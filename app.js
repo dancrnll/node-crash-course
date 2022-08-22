@@ -7,6 +7,8 @@ const app = express();
 app.set('view engine', 'ejs');
 //app.set('views', 'views');  // the views directory is the default for ejs
 
+app.use(express.static(__dirname + '/public'));
+
 // listen for requests
 app.listen(3000);
 
