@@ -7,7 +7,13 @@ const blog = require('./models/blog.js');
 const app = express();
 
 // connect to mysql db
-blog.connectToDb(app);
+blog.connectToDb().then((message) => {
+    console.log(message);
+    // now that we have a db connection, listen for requests
+    app.listen(3000);
+}).catch((err) => {
+    console.log(err);
+});
 
 // register vie wengine
 app.set('view engine', 'ejs');
@@ -28,9 +34,11 @@ app.get('/about', (req, res) => {
 
 // blog routes
 app.get('/blogs', (req, res) => {
-    blog.allBlogs(-1, (list) => {
-        res.render('index', { title: 'All Blogs', blogs: list } );
-    });
+    blog.allBlogs(-1).then((list) => {
+        res.render('index', { title: 'All Blogs', blogs: list });
+    }).catch((err) => {
+        console.log(err);
+    })
 });
 
 app.get('/blogs/create', (req, res) => {
