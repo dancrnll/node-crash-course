@@ -1,19 +1,42 @@
 const express = require('express');
 const morgan = require('morgan');
+//const mysql = require('mysql');
+const blogDb = require('./blogDb.js');
 
 // express app
 const app = express();
+
+// connect to mysql db
+blogDb.connectToDb(app);
 
 // register vie wengine
 app.set('view engine', 'ejs');
 //app.set('views', 'views');  // the views directory is the default for ejs
 
-// listen for requests
-app.listen(3000);
-
-// middleware & statis files
+// middleware & status files
 app.use(express.static('public'));
 app.use(morgan('dev')); // log request
+
+app.get('/add-blog', (req, res) => {
+    blogDb.addBlog({
+        title: 'new blog',
+        snippet: 'about my new blog',
+        body: 'more about my new blog'
+    });
+    res.end();
+});
+
+app.get('/all-blogs', (req, res) => {
+    blogDb.allBlogs((list) => {
+        res.send(list);
+    });
+});
+
+app.get('/single-blog', (req, res) => {
+    blogDb.getBlogById(1, (blogEntry) => {
+        res.send(blogEntry);
+    });
+});
 
 app.get('/', (req, res) => {
     const blogs = [
