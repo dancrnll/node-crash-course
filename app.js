@@ -1,13 +1,13 @@
 const express = require('express');
 const morgan = require('morgan');
 //const mysql = require('mysql');
-const blogDb = require('./blogDb.js');
+const blog = require('./models/blog.js');
 
 // express app
 const app = express();
 
 // connect to mysql db
-blogDb.connectToDb(app);
+blog.connectToDb(app);
 
 // register vie wengine
 app.set('view engine', 'ejs');
@@ -17,41 +17,23 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(morgan('dev')); // log request
 
-app.get('/add-blog', (req, res) => {
-    blogDb.addBlog({
-        title: 'new blog',
-        snippet: 'about my new blog',
-        body: 'more about my new blog'
-    });
-    res.end();
-});
-
-app.get('/all-blogs', (req, res) => {
-    blogDb.allBlogs((list) => {
-        res.send(list);
-    });
-});
-
-app.get('/single-blog', (req, res) => {
-    blogDb.getBlogById(1, (blogEntry) => {
-        res.send(blogEntry);
-    });
-});
-
+// routes
 app.get('/', (req, res) => {
-    const blogs = [
-        {title: 'Yoshi finds eggs', snippet: 'Loren ipsum dolor sit amet consectetur'},
-        {title: 'Mario finds stars', snippet: 'Loren ipsum dolor sit amet consectetur'},
-        {title: 'How to defeat bowser', snippet: 'Loren ipsum dolor sit amet consectetur'},
-    ];
-    res.render('index', { title: 'Home', blogs });
+    res.redirect('/blogs');
 });
 
 app.get('/about', (req, res) => {
     res.render('about', { title: 'About' });
 });
 
-app.get('/BLOGS/CREATE', (req, res) => {
+// blog routes
+app.get('/blogs', (req, res) => {
+    blog.allBlogs(-1, (list) => {
+        res.render('index', { title: 'All Blogs', blogs: list } );
+    });
+});
+
+app.get('/blogs/create', (req, res) => {
     res.render('create', { title: 'Create a New Blog' });
 });
 

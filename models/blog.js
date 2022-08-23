@@ -28,8 +28,12 @@ let addBlog = (blogData) => {
       });
 }
 
-let allBlogs = (callBack) => {
-    connection.query(`SELECT id, title, snippet, body FROM blog`, function (error, results, fields) {
+let allBlogs = (descOrder, callBack) => {
+    let sqlStr = `SELECT id, title, snippet, body FROM blog`;
+    if (descOrder < 0) {
+        sqlStr += ` ORDER BY createdTS DESC`;
+    }
+    connection.query(sqlStr, function (error, results, fields) {
         // if (error) throw error;
         if (error) console.log(error);
         let list = [];
