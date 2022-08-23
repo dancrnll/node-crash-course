@@ -20,6 +20,7 @@ app.set('view engine', 'ejs');
 
 // middleware & status files
 app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev')); // log request
 
 // routes
@@ -31,6 +32,7 @@ app.get('/about', (req, res) => {
     res.render('about', { title: 'About' });
 });
 
+// blog routes
 app.get('/blogs', (req, res) => {
     (async () => {
         try {
@@ -38,6 +40,20 @@ app.get('/blogs', (req, res) => {
             res.render('index', { title: 'All Blogs', blogs: list });
         } catch (err) {
             console.log(err);
+            res.end();
+        }
+    })();
+});
+
+app.post('/blogs', (req, res) => {
+    //console.log(req.body);
+    (async () => {
+        try {
+            const msg = await blog.addBlog(req.body);
+            res.redirect('/blogs');
+        } catch (err) {
+            console.log(err);
+            res.end();
         }
     })();
 });

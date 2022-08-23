@@ -1,4 +1,4 @@
-mysql = require('mysql');
+const mysql = require('mysql');
 
 // connect to mysql db
 let connection = mysql.createConnection({
@@ -22,7 +22,14 @@ let connectToDb = () => {
 
 let addBlog = (blogData) => {
     return new Promise((resolve, reject) => {
-        connection.query(`INSERT INTO blog (title, snippet, body) VALUES ('${blogData.title}', '${blogData.snippet}', '${blogData.body}')`, function (error, results, fields) {
+
+        let title = connection.escape(blogData.title);
+        let snippet = connection.escape(blogData.snippet);
+        let body = connection.escape(blogData.body);
+
+        let sql = `INSERT INTO blog (title, snippet, body) VALUES (${title}, ${snippet}, ${body})`;
+        console.log(sql);
+        connection.query(sql, function (error, results, fields) {
             if (error) {
                 console.log(error);
                 reject(error);
