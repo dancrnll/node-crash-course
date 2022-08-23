@@ -1,6 +1,5 @@
 const express = require('express');
 const morgan = require('morgan');
-//const mysql = require('mysql');
 const blog = require('./models/blog.js');
 
 // express app
@@ -32,13 +31,15 @@ app.get('/about', (req, res) => {
     res.render('about', { title: 'About' });
 });
 
-// blog routes
 app.get('/blogs', (req, res) => {
-    blog.allBlogs(-1).then((list) => {
-        res.render('index', { title: 'All Blogs', blogs: list });
-    }).catch((err) => {
-        console.log(err);
-    })
+    (async () => {
+        try {
+            const list = await blog.allBlogs(-1);
+            res.render('index', { title: 'All Blogs', blogs: list });
+        } catch (err) {
+            console.log(err);
+        }
+    })();
 });
 
 app.get('/blogs/create', (req, res) => {
