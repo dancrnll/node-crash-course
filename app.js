@@ -58,6 +58,23 @@ app.post('/blogs', (req, res) => {
     })();
 });
 
+// single blog
+app.get('/blogs/:id', (req, res) => {
+    const id = req.params.id;
+    (async () => {
+        try {
+            const blogEntry = await blog.getBlogById(id);
+            res.render('details', { title: 'Blog Details', blog: blogEntry });
+        } catch (err) {
+            console.log(err);
+            res.end();
+        }
+    })();
+
+    console.log(id);
+    res.end;
+});
+
 app.get('/blogs/create', (req, res) => {
     res.render('create', { title: 'Create a New Blog' });
 });
