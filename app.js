@@ -1,13 +1,17 @@
 const express = require('express');
 const morgan = require('morgan');
+const dbConnect = require('./dbConnect.js');
 const blog = require('./models/blog.js');
+const blogRoutes = require('./routes/blogRoutes.js');
 
 // express app
 const app = express();
 
 // connect to mysql db
-blog.connectToDb().then((message) => {
+dbConnect.connectToDb().then((message) => {
     console.log(message);
+    blog.setConnection(dbConnect.connection);
+
     // now that we have a db connection, listen for requests
     app.listen(3000);
 }).catch((err) => {
@@ -36,64 +40,7 @@ app.get('/about', (req, res) => {
 });
 
 // blog routes
-app.get('/blogs', (req, res) => {
-    (async () => {
-        try {
-            const list = await blog.allBlogs(-1);
-            res.render('index', { title: 'All Blogs', blogs: list });
-        } catch (err) {
-            console.log(err);
-            res.end();
-        }
-    })();
-});
-
-// display all blogs
-app.post('/blogs', (req, res) => {
-    //console.log(req.body);
-    (async () => {
-        try {
-            const msg = await blog.addBlog(req.body);
-            res.redirect('/blogs');
-        } catch (err) {
-            console.log(err);
-            res.end();
-        }
-    })();
-});
-
-// add new blog
-app.get('/blogs/create', (req, res) => {
-    res.render('create', { title: 'Create a New Blog' });
-});
-
-// display single blog
-app.get('/blogs/:id', (req, res) => {
-    const id = req.params.id;
-    (async () => {
-        try {
-            const blogEntry = await blog.getBlogById(id);
-            res.render('details', { title: 'Blog Details', blog: blogEntry });
-        } catch (err) {
-            console.log(err);
-            res.end();
-        }
-    })();
-});
-
-// delete single blog
-app.delete('/blogs/:id', (req, res) => {
-    const id = req.params.id;
-    (async () => {
-        try {
-            const blogEntry = await blog.deleteBlogById(id);
-            res.json({ redirect: '/blogs' });
-        } catch (err) {
-            console.log(err);
-            res.end();
-        }
-    })();
-});
+app.use('/blogs', blogRoutes);
 
 // 404 page
 app.use((req, res) => {
