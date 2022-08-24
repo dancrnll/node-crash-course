@@ -1,66 +1,21 @@
 const express = require('express');
-const blog = require('../models/blog');
+const blogController = require('../controllers/blogController');
 
 const router = express.Router();
 
 // all blogs
-router.get('/', (req, res) => {
-    (async () => {
-        try {
-            const list = await blog.allBlogs(-1);
-            res.render('index', { title: 'All Blogs', blogs: list });
-        } catch (err) {
-            console.log(errouterr);
-            res.end();
-        }
-    })();
-});
+router.get('/', blogController.blog_index);
 
 // add blog to db
-router.post('/', (req, res) => {
-    //console.log(req.body);
-    (async () => {
-        try {
-            const msg = await blog.addBlog(req.body);
-            res.redirect('/blogs');
-        } catch (err) {
-            console.log(err);
-            res.end();
-        }
-    })();
-});
+router.post('/', blogController.blog_create_post);
 
 // show page to add new blog
-router.get('/create', (req, res) => {
-    res.render('create', { title: 'Create a New Blog' });
-});
+router.get('/create', blogController.blog_create_get);
 
 // display single blog
-router.get('/:id', (req, res) => {
-    const id = req.params.id;
-    (async () => {
-        try {
-            const blogEntry = await blog.getBlogById(id);
-            res.render('details', { title: 'Blog Details', blog: blogEntry });
-        } catch (err) {
-            console.log(err);
-            res.end();
-        }
-    })();
-});
+router.get('/:id', blogController.blog_details);
 
 // delete single blog
-router.delete('/:id', (req, res) => {
-    const id = req.params.id;
-    (async () => {
-        try {
-            const blogEntry = await blog.deleteBlogById(id);
-            res.json({ redirect: '/blogs' });
-        } catch (err) {
-            console.log(err);
-            res.end();
-        }
-    })();
-});
+router.delete('/:id', blogController.blog_delete);
 
 module.exports = router;
