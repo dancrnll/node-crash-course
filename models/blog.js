@@ -29,7 +29,6 @@ let allBlogs = (descOrder) => {
             sqlStr += ` ORDER BY createdTS DESC`;
         }
         connection.query(sqlStr, function (error, results, fields) {
-            // if (error) throw error;
             if (error) {
                 reject(error);
             } else {
@@ -50,16 +49,19 @@ let allBlogs = (descOrder) => {
 let getBlogById = (id) => {
     return new Promise((resolve, reject) => {
         connection.query(`SELECT id, title, snippet, body FROM blog WHERE id=${id}`, function (error, results, fields) {
-            // if (error) throw error;
             if (error) {
                 reject(error);
             } else {
-                let r = results[0];
-                let id = r.id;
-                let title = r.title;
-                let snippet = r.snippet;
-                let body = r.body;
-                resolve({ id, title, snippet, body });
+                if (results.length > 0) {
+                    let r = results[0];
+                    let id = r.id;
+                    let title = r.title;
+                    let snippet = r.snippet;
+                    let body = r.body;
+                    resolve({ id, title, snippet, body });
+                } else {
+                    reject('blog not found');
+                }
             }
         });
     });
@@ -68,7 +70,6 @@ let getBlogById = (id) => {
 let deleteBlogById = (id) => {
     return new Promise((resolve, reject) => {
         connection.query(`DELETE FROM blog WHERE id=${id}`, function (error, results, fields) {
-            // if (error) throw error;
             if (error) {
                 reject(error);
             } else {

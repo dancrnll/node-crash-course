@@ -74,13 +74,13 @@ h3{
   right: 0;
   border-radius: 50%;
   padding: 8px;
-  background-color: rgb(231, 95, 122);
-  color: white;
+  /* background-color: rgb(231, 95, 122); */
+  /* color: white; */
 }
 .delete:hover {
   cursor: pointer;
-  box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.3);
-  background-color: crimson;
+  box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.5);
+  /*background-color: crimson;*/
 }
 /* create styles */
 .create-blog form{
