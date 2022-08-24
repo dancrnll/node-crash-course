@@ -28,10 +28,8 @@ let addBlog = (blogData) => {
         let body = connection.escape(blogData.body);
 
         let sql = `INSERT INTO blog (title, snippet, body) VALUES (${title}, ${snippet}, ${body})`;
-        console.log(sql);
         connection.query(sql, function (error, results, fields) {
             if (error) {
-                console.log(error);
                 reject(error);
             } else {
                 resolve('blog added');
@@ -69,7 +67,6 @@ let getBlogById = (id) => {
     return new Promise((resolve, reject) => {
         connection.query(`SELECT id, title, snippet, body FROM blog WHERE id=${id}`, function (error, results, fields) {
             // if (error) throw error;
-            if (error) console.log(error);
             if (error) {
                 reject(error);
             } else {
@@ -84,9 +81,23 @@ let getBlogById = (id) => {
     });
 }
 
+let deleteBlogById = (id) => {
+    return new Promise((resolve, reject) => {
+        connection.query(`DELETE FROM blog WHERE id=${id}`, function (error, results, fields) {
+            // if (error) throw error;
+            if (error) {
+                reject(error);
+            } else {
+                resolve('blog deleted');
+            }
+        });
+    });
+}
+
 module.exports = {
     connectToDb,
     addBlog,
     allBlogs,
     getBlogById,
+    deleteBlogById,
 };

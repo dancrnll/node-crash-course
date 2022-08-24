@@ -24,10 +24,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev')); // log request
 
 // routes
+
+// home page (the blogs page is the home page)
 app.get('/', (req, res) => {
     res.redirect('/blogs');
 });
 
+// about page
 app.get('/about', (req, res) => {
     res.render('about', { title: 'About' });
 });
@@ -45,6 +48,7 @@ app.get('/blogs', (req, res) => {
     })();
 });
 
+// display all blogs
 app.post('/blogs', (req, res) => {
     //console.log(req.body);
     (async () => {
@@ -58,7 +62,12 @@ app.post('/blogs', (req, res) => {
     })();
 });
 
-// single blog
+// add new blog
+app.get('/blogs/create', (req, res) => {
+    res.render('create', { title: 'Create a New Blog' });
+});
+
+// display single blog
 app.get('/blogs/:id', (req, res) => {
     const id = req.params.id;
     (async () => {
@@ -70,13 +79,20 @@ app.get('/blogs/:id', (req, res) => {
             res.end();
         }
     })();
-
-    console.log(id);
-    res.end;
 });
 
-app.get('/blogs/create', (req, res) => {
-    res.render('create', { title: 'Create a New Blog' });
+// delete single blog
+app.delete('/blogs/:id', (req, res) => {
+    const id = req.params.id;
+    (async () => {
+        try {
+            const blogEntry = await blog.deleteBlogById(id);
+            res.json({ redirect: '/blogs' });
+        } catch (err) {
+            console.log(err);
+            res.end();
+        }
+    })();
 });
 
 // 404 page
